@@ -12,6 +12,10 @@ Os algoritmos são:
 	<li>Árvore Binária de Busca</li>
 	<li>Lista de adjacências (Grafos)</li>
 	<li>Busca em Largura (Grafos)</li>
+	<li>Busca em Profundidade (Grafos)</li>
 	<li>Detecção de ciclos (Grafos)</li>
+	<li>Verificar a existência de caminhos entre dois vértices (Grafos)</li>
 	<li>Encontrar o menor caminho entre dois vértices (Grafos)</li>
 </ol>
+
+Todos os exemplos foram feitos utilizando C++ 11. Ao compilar, verifique se seu compilador é compatível com o padrão C++ 11 e certifique-se de que essa opção esteja habilitada.
