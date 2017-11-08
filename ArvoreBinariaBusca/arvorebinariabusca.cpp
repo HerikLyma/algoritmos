@@ -13,7 +13,7 @@ class Arvore
     };
     Elemento *raiz = nullptr;
 
-    Elemento *pai(Elemento *elemento, const TIPO &valor)
+    Elemento *pai(Elemento *elemento, const TIPO &valor) const
     {
         if(elemento)
         {
@@ -52,27 +52,47 @@ class Arvore
         return elemento;
     }
 
-    void imprimirCrescente(Elemento *elemento)
+    void imprimirPreOrdem(Elemento *elemento) const
     {
         if(elemento)
         {
-            imprimirCrescente(elemento->esquerda);
             cout << elemento->valor << '\n';
-            imprimirCrescente(elemento->direita);
+            imprimirPreOrdem(elemento->esquerda);
+            imprimirPreOrdem(elemento->direita);
         }
     }
 
-    void imprimirDecrescente(Elemento *elemento)
+    void imprimirPosOrdem(Elemento *elemento) const
     {
         if(elemento)
         {
-            imprimirDecrescente(elemento->direita);
+            imprimirPosOrdem(elemento->esquerda);
+            imprimirPosOrdem(elemento->direita);
             cout << elemento->valor << '\n';
-            imprimirDecrescente(elemento->esquerda);
         }
     }
 
-    Elemento *buscar(Elemento *elemento, const TIPO &valor)
+    void imprimirInOrdemCrescente(Elemento *elemento) const
+    {
+        if(elemento)
+        {
+            imprimirInOrdemCrescente(elemento->esquerda);
+            cout << elemento->valor << '\n';
+            imprimirInOrdemCrescente(elemento->direita);
+        }
+    }
+
+    void imprimirInOrdemDecrescente(Elemento *elemento) const
+    {
+        if(elemento)
+        {
+            imprimirInOrdemDecrescente(elemento->direita);
+            cout << elemento->valor << '\n';
+            imprimirInOrdemDecrescente(elemento->esquerda);
+        }
+    }
+
+    Elemento *buscar(Elemento *elemento, const TIPO &valor) const
     {
         if(elemento)
         {
@@ -115,6 +135,33 @@ class Arvore
             delete elemento;
         }
     }
+
+    int altura(Elemento *elemento) const
+    {
+        if(!elemento)
+            return -1;
+
+        int he = altura(elemento->esquerda);
+        int hd = altura(elemento->direita);
+        int maximo = he > hd ? he : hd;
+        return maximo + 1;
+    }
+
+    int numeroNos(Elemento *elemento) const
+    {
+        if(!elemento)
+            return 0;
+        return 1 + numeroNos(elemento->esquerda) + numeroNos(elemento->direita);
+    }
+
+    int numeroFolhas(Elemento *elemento) const
+    {
+        if(!elemento)
+            return 0;
+        else if(!elemento->esquerda && !elemento->direita)
+            return 1;
+        return numeroNos(elemento->esquerda) + numeroNos(elemento->direita);
+    }
 public:
     ~Arvore()
     {
@@ -128,19 +175,29 @@ public:
         raiz = inserir(raiz, novo);
     }
 
-    bool existe(const TIPO &valor)
+    bool existe(const TIPO &valor) const
     {
         return buscar(raiz, valor) != nullptr;
     }
 
-    void imprimirCrescente()
+    void imprimirInOrdemCrescente() const
     {
-        imprimirCrescente(raiz);
+        imprimirInOrdemCrescente(raiz);
     }
 
-    void imprimirDecrescente()
+    void imprimirInOrdemDecrescente() const
     {
-        imprimirDecrescente(raiz);
+        imprimirInOrdemDecrescente(raiz);
+    }
+
+    void imprimirPreOrdem() const
+    {
+        imprimirPreOrdem(raiz);
+    }
+
+    void imprimirPosOrdem() const
+    {
+        imprimirPosOrdem(raiz);
     }
 
     TIPO minimo(bool *encontrou = nullptr) const
@@ -163,7 +220,7 @@ public:
         return TIPO();
     }
 
-    TIPO pai(const TIPO &valor, bool *encontrou = nullptr)
+    TIPO pai(const TIPO &valor, bool *encontrou = nullptr) const
     {
         Elemento *paiAux = pai(raiz, valor);
         if(encontrou)
@@ -173,7 +230,7 @@ public:
         return TIPO();
     }
 
-    TIPO sucessor(const TIPO &valor)
+    TIPO sucessor(const TIPO &valor) const
     {
         Elemento *aux = buscar(raiz, valor);
         if(aux)
@@ -193,6 +250,21 @@ public:
         }
         return valor;
     }
+
+    int altura() const
+    {
+        return altura(raiz);
+    }
+
+    int numeroNos() const
+    {
+        return numeroNos(raiz);
+    }
+
+    int numeroFolhas() const
+    {
+        return numeroFolhas(raiz);
+    }
 };
 
 int main()
@@ -207,9 +279,14 @@ int main()
     arvore.inserir(4);
     arvore.inserir(7);
     arvore.inserir(13);
-    arvore.imprimirCrescente();
+    arvore.imprimirInOrdemCrescente();
     cout << "\n\n";
-    arvore.imprimirDecrescente();
+    arvore.imprimirInOrdemDecrescente();
+    cout << "\n\n";
+    arvore.imprimirPreOrdem();
+    cout << "\n\n";
+    arvore.imprimirPosOrdem();
+
     cout << boolalpha;
     cout << "\n\nExiste 8? " << arvore.existe(8);
     cout << "\nExiste 18? " << arvore.existe(18) << "\n\n";
@@ -219,5 +296,9 @@ int main()
     cout << "Pai de 13: " << arvore.pai(13) << '\n';
     cout << "Sucessor de 3: " << arvore.sucessor(3) << '\n';
     cout << "Sucessor de 7: " << arvore.sucessor(7) << '\n';
+    cout << "Sucessor de 6: " << arvore.sucessor(6) << '\n';
+    cout << "Altura: " << arvore.altura() << '\n';
+    cout << "N nos: " << arvore.numeroNos() << '\n';
+    cout << "N folhas: " << arvore.numeroFolhas() << '\n';
     return 0;
 }
